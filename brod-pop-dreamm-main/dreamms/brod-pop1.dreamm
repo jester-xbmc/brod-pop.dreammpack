@@ -1,0 +1,346 @@
+//
+// Prince of Persia
+//
+desc[brod-pop1]:
+
+name = Prince of Persia
+icon = brod-pop1.png
+machine = pc
+osenv = dos
+rootpath = C:\PRINCE
+launch = $(rootpath)\PRINCE.EXE $(VIDEO) $(AUDIO)
+mips = $(MIPS_286_10)
+ramkb = 640
+filter = broderbund, platformer, action
+TANDY = 0
+NEWVIDEOCFG = 0x05
+NEWSOUNDCFG = 0x00
+
+//
+// graphics configuration
+//
+config[graphics]:
+    title = Graphics Configuration
+    option[tandy]: 
+        name = $(TVIDEO_NAME)
+        videohw = cga; audiohw = speaker; machine = tandy
+        VIDEO = tga; TANDY = 1
+        AUDIO = tandy
+        NEWVIDEOCFG = 0x03
+        NEWSOUNDCFG = 0x07
+        NEWMUSICCFG = 0x07
+        condition = file_exists("$$(rootpath)\\CDUNGEON.DAT")
+    end
+    option[hercules]: 
+        name = $(HERCULES_NAME)
+        videohw = hercules
+        VIDEO = herc
+        NEWVIDEOCFG = 0x02
+        condition = file_exists("$$(rootpath)\\CDUNGEON.DAT")
+    end
+    option[cga]:  
+        name = $(CGA_NAME)
+        videohw = cga
+        VIDEO = cga
+        NEWVIDEOCFG = 0x01
+        condition = file_exists("$$(rootpath)\\CDUNGEON.DAT")
+    end
+    option[ega]:
+        name = $(EGA_NAME)
+        videohw = ega
+        VIDEO = ega
+        NEWVIDEOCFG = 0x04
+        condition = file_exists("$$(rootpath)\\EDUNGEON.DAT")
+    end
+    option[mcga]:     
+        name = $(MCGA_NAME)
+        videohw = mcga
+        VIDEO = mcga
+        NEWVIDEOCFG = 0x05
+    end
+    option[vga]:     
+        name = $(VGA_NAME)
+        videohw = vga; priority = 1
+        VIDEO = vga
+        NEWVIDEOCFG = 0x05
+    end
+end
+
+//
+// sound configuration
+//
+config[sound]:
+    title = Sound Configuration
+    condition = !$(TANDY)
+    option[speaker]:
+        name = $(SPEAKER_NAME)
+        audiohw = speaker
+        AUDIO = stdsnd
+        NEWSOUNDCFG = 0x00
+        NEWMUSICCFG = 0x00
+        14SOUNDCFG = 0xFF 0xFF 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xFE 0xFF 0xFE 0xFF 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x01 0x00 0x01 0x00 0x00 0x00
+        14SETUP = 0x00 0x00 0x01 0x00 0x01 0x00 0x00 0x00 0x00 0x00 0xFE 0xFF 0xFE 0xFF 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x01 0x00 0x01 0x00 0x00 0x00
+    end
+    option[cms]:
+        name = $(CMS_NAME)
+        audiohw = cms
+        AUDIO = gblast
+        condition = file_exists("$$(rootpath)\\EDUNGEON.DAT")
+    end
+    option[adlib]:
+        name = $(ADLIB_NAME)
+        audiohw = adlib
+        AUDIO = adlib
+        NEWSOUNDCFG = 0x01
+        NEWMUSICCFG = 0x01
+        condition = file_exists("$$(rootpath)\\EDUNGEON.DAT")
+    end
+    option[sb16]:
+        name = $(SB16_NAME)
+        audiohw = sb16; priority = 1
+        AUDIO = sblast
+        NEWSOUNDCFG = 0x03
+        NEWMUSICCFG = 0x03
+        14SOUNDCFG = 0xFF 0xFF 0x00 0x00 0x00 0x00 0x01 0x00 0x21 0x00 0xFE 0xFF 0xFE 0xFF 0x20 0x02 0xFF 0xFF 0x01 0x00 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0x01 0x00 0x01 0x00 0x00 0x00
+    end
+    option[gmidi]:
+        name = $(GMIDI_NAME)
+        audiohw = gmidi
+        AUDIO = midi
+        condition = file_exists("$$(rootpath)\\EDUNGEON.DAT")
+    end
+    option[mt32+sb16]:
+        name = Roland MT-32 plus SoundBlaster
+        audiohw = mt32+sb16
+        NEWSOUNDCFG = 0x03
+        NEWMUSICCFG = 0x06
+        condition = file_exists("$$(rootpath)\\MT32SND1.DAT")
+        condition = file_exists("$$(rootpath)\\MT32SND2.DAT")
+    end
+    option[mt32]:
+        name = Roland MT-32
+        audiohw = mt32
+        NEWSOUNDCFG = 0x06
+        NEWMUSICCFG = 0x06
+        condition = file_exists("$$(rootpath)\\MT32SND1.DAT")
+        condition = file_exists("$$(rootpath)\\MT32SND2.DAT")
+    end
+end
+
+dynamicfile[]:
+    condition = file_exists("$$(rootpath)\\CONFIG.DAT")
+    condition = file_exists("$$(rootpath)\\INSTALL.PDM")
+    path = $(rootpath)\CONFIG.DAT
+    contents = [[[
+        [[BINARY:$(NEWVIDEOCFG) 0x00 0x00 0x00 0xFF 0xFF $(NEWSOUNDCFG) 0x00 $(NEWMUSICCFG) 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x01 0x00 0x01 0x00 0x00 0x00]]
+    ]]]
+end
+
+dynamicfile[]:
+    condition = file_exists("$$(rootpath)\\DIGI.DRV")
+    path = $(rootpath)\CONFIG.DAT
+    contents = [[[
+        [[BINARY:$(14SOUNDCFG)]]
+    ]]]
+end
+
+dynamicfile[]:
+    condition = file_exists("$$(rootpath)\\DIGI.DRV")
+    path = $(rootpath)\SETUP.DAT
+    contents = [[[
+        [[BINARY:$(14SETUP)]]
+    ]]]
+end
+
+//
+// filesystem
+//
+mount[]: vpath = C:\;         srcpath = $(ifsdeltapath); writable = true;
+mount[]: vpath = $(rootpath); srcpath = $(ifsinstallpath);
+
+//
+// Demo
+//
+demo[v1.0-demo-1x720k]:
+    name = v1.0 Demo, 1x720K
+    anchorfile = PRINCE.EXE
+    file[]: crc = 9da178a8; size =      7662; name = CDUNGEON.DAT
+    file[]: crc = 30981edc; size =     33199; name = DIGISND1.DAT
+    file[]: crc = d32a4f6e; size =      7971; name = DIGISND2.DAT
+    file[]: crc = 4a474988; size =     20974; name = DIGISND3.DAT
+    file[]: crc = 43956fbf; size =      8408; name = EDUNGEON.DAT
+    file[]: crc = 594674d6; size =      6950; name = GUARD.DAT
+    file[]: crc = a5b5de91; size =       117; name = GUARD2.DAT
+    file[]: crc = 0219b8d0; size =      4219; name = IBM_SND1.DAT
+    file[]: crc = e6c50f5e; size =      1928; name = IBM_SND2.DAT
+    file[]: crc = baf68c9d; size =     37149; name = KID.DAT
+    file[]: crc = 3c8904b2; size =      6950; name = LEVELS.DAT
+    file[]: crc = f10f875d; size =      5097; name = MIDISND1.DAT
+    file[]: crc = feab7b45; size =      5626; name = MIDISND2.DAT
+    file[]: crc = 31793851; size =      3278; name = PRINCE.DAT
+    file[]: crc = 64691b12; size =    123335; name = PRINCE.EXE
+    file[]: crc = 772e7706; size =     25829; name = PV.DAT
+    file[]: crc = d8e5c4cc; size =     34904; name = TITLE.DAT
+    file[]: crc = a83e5b1f; size =     11845; name = VDUNGEON.DAT
+end
+
+//
+// v1.0
+//
+game[v1.0-1x720k]:
+    name = v1.0, 1x720K
+    anchorfile = PRINCE.EXE
+    file[]: crc = 8dfd8a32; size =      9407; name = CDUNGEON.DAT
+    file[]: crc = d99b4d4d; size =     12889; name = CPALACE.DAT
+    file[]: crc = 61e90209; size =        55; name = DESKTOPD.CFG
+    file[]: crc = bf4d0f41; size =     48545; name = DIGISND1.DAT
+    file[]: crc = 1f7a6563; size =     29143; name = DIGISND2.DAT
+    file[]: crc = 61875378; size =     31000; name = DIGISND3.DAT
+    file[]: crc = d0001fc6; size =     10165; name = EDUNGEON.DAT
+    file[]: crc = 2d059e03; size =     13876; name = EPALACE.DAT
+    file[]: crc = 955ce8c6; size =      6521; name = FAT.DAT
+    file[]: crc = 594674d6; size =      6950; name = GUARD.DAT
+    file[]: crc = 4c32b5a2; size =       117; name = GUARD1.DAT
+    file[]: crc = a5b5de91; size =       117; name = GUARD2.DAT
+    file[]: crc = a5bcb241; size =      3684; name = IBM_SND1.DAT
+    file[]: crc = 79de3dcb; size =      3784; name = IBM_SND2.DAT
+    file[]: crc = ffef01ff; size =     11449; name = INSTALL.EXE ; optional = true
+    file[]: crc = 9282635d; size =      4233; name = INSTALL.PDM ; optional = true
+    file[]: crc = 90e5edb6; size =     37149; name = KID.DAT
+    file[]: crc = dd46eefc; size =     37031; name = LEVELS.DAT
+    file[]: crc = 258d38a5; size =      9368; name = MIDISND1.DAT
+    file[]: crc = 7b6ced71; size =     18408; name = MIDISND2.DAT
+    file[]: crc = 31793851; size =      3278; name = PRINCE.DAT
+    file[]: crc = 01125b88; size =    123335; name = PRINCE.EXE
+    file[]: crc = 772e7706; size =     25829; name = PV.DAT
+    file[]: crc = d886b145; size =      4715; name = SHADOW.DAT
+    file[]: crc = 12df3c20; size =      3864; name = SKEL.DAT
+    file[]: crc = a9a01505; size =     36725; name = TITLE.DAT
+    file[]: crc = 80a8caba; size =     14220; name = VDUNGEON.DAT
+    file[]: crc = 6010d5ca; size =      6111; name = VIZIER.DAT
+    file[]: crc = e0a66994; size =     14226; name = VPALACE.DAT
+end
+
+game[v1.0-2x360k]:
+    name = v1.0, 2x360K
+    imports = v1.0-1x720k
+    file[]: crc = 5d396264; size =     11481; name = INSTALL.EXE
+end
+
+game[v1.0-2x360k-french]:
+    name = French v1.0, 2x360K
+    imports = v1.0-1x720k
+    file[]: crc = 5d396264; size =     11481; name = INSTALL.EXE
+    file[]: crc = cf6a2eb5; size =     35914; name = TITLE.DAT
+    file[]: crc = ecccef57; size =    122295; name = PRINCE.EXE
+end
+
+game[v1.0-1x720k-french]:
+    name = French v1.0, 1x720K
+    imports = v1.0-1x720k
+    file[]: crc = cf6a2eb5; size =     35914; name = TITLE.DAT
+    file[]: crc = 9fd5108b; size =    122295; name = PRINCE.EXE
+end
+
+game[v1.0-german]:
+    name = German v1.0
+    imports = v1.0-1x720k
+    file[]: crc = 25073b10; size =     37110; name = TITLE.DAT
+    file[]: crc = d9a08716; size =    122295; name = PRINCE.EXE
+end
+
+//
+// v1.1
+//
+game[v1.1-1x720k]:
+    name = v1.1, 1x720K
+    imports = v1.0-1x720k
+    file[]: crc = 5ae1f076; size =    122167; name = PRINCE.EXE
+    file[]: crc = d462527b; size =     11445; name = INSTALL.EXE
+end
+
+game[v1.1-2x360k]:
+    name = v1.1, 2x360K
+    imports = v1.0-1x720k
+    file[]: crc = 5ae1f076; size =    122167; name = PRINCE.EXE
+    file[]: crc = 8d4f94e9; size =     11447; name = INSTALL.EXE
+end
+
+//
+// v1.3
+//
+game[v1.3-1x720k]:
+    name = v1.3, 1x720K
+    imports = v1.1-1x720k
+    launch = $(rootpath)\PRINCE.EXE
+    anchorfile = PRINCE.EXE
+    file[]: crc = 6b919f7a; size =     10996; name = CONEDIT.COM ; optional = true
+    file[]: crc = ddb9f7ef; size =        28; name = CONFIG.DAT
+    file[]: crc = 6b313cec; size =     50101; name = DIGISND1.DAT
+    file[]: crc = 027c8347; size =     32426; name = DIGISND2.DAT
+    file[]: crc = bdc949b3; size =     31008; name = DIGISND3.DAT
+    file[]: crc = 88e31b3c; size =     11289; name = INSTALL.EXE ; optional = true
+    file[]: crc = 5abc54f4; size =      7096; name = MIDISND1.DAT
+    file[]: crc = f393fe9f; size =     18958; name = MIDISND2.DAT
+    file[]: crc = db7893ba; size =      3833; name = MT32SND1.DAT
+    file[]: crc = d1cd19e7; size =      1129; name = MT32SND2.DAT
+    file[]: crc = 42f548d8; size =     25600; name = PRINCE.DAT
+    file[]: crc = a3599864; size =    125115; name = PRINCE.EXE
+    file[]: crc = 1bdae531; size =       225; name = SETUP.CFG
+    file[]: crc = 3aeff1a3; size =        28; name = SETUP.DAT
+    file[]: crc = 2dff1cb0; size =     35983; name = SETUP.EXE
+    file[]: crc = d348a9ac; size =      3868; name = SKEL.DAT
+    file[]: crc = 50168e4f; size =     36799; name = TITLE.DAT
+    file[]: crc = 3f2a9627; size =     10933; name = VDUNGEON.DAT
+    file[]: crc = 1c712ce9; size =     14212; name = VPALACE.DAT
+end
+
+game[v1.3-2x360k]:
+    name = v1.3, 2x360K
+    imports = v1.3-1x720k
+    launch = $(rootpath)\PRINCE.EXE
+    file[]: crc = ce387b67; size =     11321; name = INSTALL.EXE
+end
+
+//
+// v1.4 
+//
+game[v1.4]:
+    name = v1.4
+    launch = $(rootpath)\PRINCE.EXE
+    anchorfile = PRINCE.EXE
+    file[]: crc = a60bfc3a; size =        32; name = CONFIG.DAT
+    file[]: crc = 789a0a25; size =      2224; name = DIGI.DRV
+    file[]: crc = 6b313cec; size =     50101; name = DIGISND1.DAT
+    file[]: crc = 027c8347; size =     32426; name = DIGISND2.DAT
+    file[]: crc = bdc949b3; size =     31008; name = DIGISND3.DAT
+    file[]: crc = 955ce8c6; size =      6521; name = FAT.DAT
+    file[]: crc = 594674d6; size =      6950; name = GUARD.DAT
+    file[]: crc = 4c32b5a2; size =       117; name = GUARD1.DAT
+    file[]: crc = a5b5de91; size =       117; name = GUARD2.DAT
+    file[]: crc = a5bcb241; size =      3684; name = IBM_SND1.DAT
+    file[]: crc = 79de3dcb; size =      3784; name = IBM_SND2.DAT
+    file[]: crc = 90e5edb6; size =     37149; name = KID.DAT
+    file[]: crc = dd46eefc; size =     37031; name = LEVELS.DAT
+    file[]: crc = f701696b; size =      2432; name = MIDI.DRV
+    file[]: crc = 5abc54f4; size =      7096; name = MIDISND1.DAT
+    file[]: crc = f393fe9f; size =     18958; name = MIDISND2.DAT
+    file[]: crc = 3fe2afef; size =      1201; name = PRESETS.DEF
+    file[]: crc = 42f548d8; size =     25600; name = PRINCE.DAT
+    file[]: crc = 3da7e66c; size =    110855; name = PRINCE.EXE
+    file[]: crc = 772e7706; size =     25829; name = PV.DAT
+    file[]: crc = fd67eac7; size =       658; name = SETUP.CFG
+    file[]: crc = df48bfb1; size =        32; name = SETUP.DAT
+    file[]: crc = e315fc03; size =     76457; name = SETUP.EXE
+    file[]: crc = d886b145; size =      4715; name = SHADOW.DAT
+    file[]: crc = d348a9ac; size =      3868; name = SKEL.DAT
+    file[]: crc = 50168e4f; size =     36799; name = TITLE.DAT
+    file[]: crc = 3f2a9627; size =     10933; name = VDUNGEON.DAT
+    file[]: crc = 6010d5ca; size =      6111; name = VIZIER.DAT
+    file[]: crc = 1c712ce9; size =     14212; name = VPALACE.DAT
+    file[]: crc = 789a0a25; size =      2224; name = SNDDRVRS\DSB_PRO.DRV
+    file[]: crc = f701696b; size =      2432; name = SNDDRVRS\MSB_PRO.DRV
+    file[]: crc = 3fe2afef; size =      1201; name = SNDDRVRS\PRESET33.DEF
+end
+
+end
