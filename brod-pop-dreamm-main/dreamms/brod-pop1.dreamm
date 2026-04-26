@@ -279,7 +279,7 @@ game[v1.3-1x720k]:
     file[]: crc = 6b313cec; size =     50101; name = DIGISND1.DAT
     file[]: crc = 027c8347; size =     32426; name = DIGISND2.DAT
     file[]: crc = bdc949b3; size =     31008; name = DIGISND3.DAT
-    file[]: crc = 88e31b3c; size =     11289; name = INSTALL.EXE ; optional = true
+    file[]: crc = 88e31b3c; size =     11289; name = INSTALL.EXE
     file[]: crc = 5abc54f4; size =      7096; name = MIDISND1.DAT
     file[]: crc = f393fe9f; size =     18958; name = MIDISND2.DAT
     file[]: crc = db7893ba; size =      3833; name = MT32SND1.DAT
