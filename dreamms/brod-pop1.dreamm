@@ -263,7 +263,7 @@ game[v1.1-2x360k]:
     name = v1.1, 2x360K
     imports = v1.0-1x720k
     file[]: crc = 5ae1f076; size =    122167; name = PRINCE.EXE
-    file[]: crc = 8d4f94e9; size =     11447; name = INSTALL.EXE
+    file[]: crc = 8d4f94e9; size =     11477; name = INSTALL.EXE
 end
 
 //
